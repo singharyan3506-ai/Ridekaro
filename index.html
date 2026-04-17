@@ -54,9 +54,9 @@
   <h2>Book Your Ride</h2>
   <form style="max-width:500px;margin:auto;display:flex;flex-direction:column;gap:15px;">
     
-    <input type="text" id="pickup" placeholder="Enter Pickup Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
+    <input type="text" id="pickup"oninput="calculateFare()" placeholder="Enter Pickup Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
     
-    <input type="text" id="drop" placeholder="Enter Drop Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
+    <input type="text" id="drop"oninput="calculateFare()" placeholder="Enter Drop Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
     
     <select id="rideType" style="padding:12px;border-radius:8px;border:1px solid #ccc;">
       <option>Bike Taxi</option>
@@ -67,6 +67,9 @@
     <button type="button" onclick="bookRide()" style="padding:14px;background:#e63946;color:white;border:none;border-radius:10px;cursor:pointer;">
       Confirm Booking
     </button>
+    <p id="fare" style="font-weight:bold; margin-top:10px;">
+  Estimated Fare: ₹0
+</p>
   </form>
 </section><h2 style="text-align:center;">My Rides</h2>
 <div id="ridesList" style="max-width:600px;margin:auto;"></div>
@@ -216,6 +219,17 @@ window.bookRide = async function () {
   });
 
   document.getElementById("ridesList").innerHTML = html;
+};window.calculateFare = function () {
+  const pickup = document.getElementById("pickup").value;
+  const drop = document.getElementById("drop").value;
+
+  if (!pickup || !drop) return;
+
+  let distance = Math.floor(Math.random() * 10) + 1;
+  let fare = 30 + (distance * 10);
+
+  document.getElementById("fare").innerText =
+    "Estimated Fare: ₹" + fare;
 };
 </script></body>
 </html>
