@@ -29,7 +29,13 @@
     </button>
   </a>
 </div>
-<body><header>
+<body><h2>Login / Signup</h2>
+
+<input type="email" id="email" placeholder="Enter email">
+<input type="password" id="password" placeholder="Enter password">
+
+<button onclick="signup()">Signup</button>
+<button onclick="login()">Login</button><header>
   <div style="text-align:center; padding:10px;">
   <img src="logo.png" alt="Ridekaro Logo" width="150">
 </div>
@@ -101,5 +107,43 @@ function bookRide(){
   <button>Book Now</button>
 </section><footer>
   <p>© 2026 Ridekaro | support@ridekaro.com</p>
-</footer></body>
+</footer><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+// SIGNUP
+window.signup = async function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    alert("Signup successful");
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
+// LOGIN
+window.login = async function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    alert("Login successful");
+  } catch (err) {
+    alert(err.message);
+  }
+};
+</script></body>
 </html>
