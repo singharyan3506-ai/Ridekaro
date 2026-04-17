@@ -129,6 +129,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-auth.js";
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log("User logged in:", user.email);
+  } else {
+    console.log("No user logged in");
+  }
+});
 const db = getFirestore(app);
 
 // SIGNUP
