@@ -53,20 +53,23 @@
 </div><section style="padding:40px 20px; text-align:center; background:#fff;">
   <h2>Book Your Ride</h2>
   <form style="max-width:500px;margin:auto;display:flex;flex-direction:column;gap:15px;">
-    <input type="text" placeholder="Enter Pickup Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
-    <input type="text" placeholder="Enter Drop Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
-    <select style="padding:12px;border-radius:8px;border:1px solid #ccc;">
+    
+    <input type="text" id="pickup" placeholder="Enter Pickup Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
+    
+    <input type="text" id="drop" placeholder="Enter Drop Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
+    
+    <select id="rideType" style="padding:12px;border-radius:8px;border:1px solid #ccc;">
       <option>Bike Taxi</option>
       <option>Parcel Delivery</option>
       <option>Local Ride</option>
     </select>
-    <button type="button" onclick="bookRide()" style="padding:14px;background:#e63946;color:white;border:none;border-radius:10px;cursor:pointer;">Confirm Booking</button>
+    
+    <button type="button" onclick="bookRide()" style="padding:14px;background:#e63946;color:white;border:none;border-radius:10px;cursor:pointer;">
+      Confirm Booking
+    </button>
   </form>
-</section><script>
-function bookRide(){
-  alert('Ride booked! We will contact you shortly.');
-}
-</script><section class="hero">
+</section>
+<section class="hero">
   <h2>Book Bike Taxi in Seconds</h2>
   <p>Fast • Safe • Affordable rides in your city</p>
   <button>Start Booking</button>
@@ -112,6 +115,7 @@ function bookRide(){
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-auth.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDq8djWCKZCx9a0evT8n85vYZt8srcxH8o",
@@ -125,6 +129,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 // SIGNUP
 window.signup = async function () {
@@ -147,6 +152,32 @@ window.login = async function () {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     alert("Login successful");
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
+// BOOK RIDE (NEW)
+window.bookRide = async function () {
+  const pickup = document.getElementById("pickup").value;
+  const drop = document.getElementById("drop").value;
+  const rideType = document.getElementById("rideType").value;
+
+  if (!auth.currentUser) {
+    alert("Please login first");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "rides"), {
+      pickup: pickup,
+      drop: drop,
+      rideType: rideType,
+      user: auth.currentUser.email,
+      time: new Date()
+    });
+
+    alert("Ride booked successfully 🚗");
   } catch (err) {
     alert(err.message);
   }
