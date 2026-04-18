@@ -7,29 +7,70 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <title>Ridekaro</title>
-<link rel="icon" href="logo.png">
+<link rel="icon" href="ridekaro-logo.png">
 
 <style>
-body{font-family:sans-serif;margin:0}
-#map{height:300px}
-input,button,select{padding:8px;margin:5px}
+body{
+font-family:sans-serif;
+margin:0;
+background:#fffdf5;
+}
+
+#map{
+height:300px;
+border-radius:10px;
+}
+
+input,button,select{
+padding:12px;
+margin:6px;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+button{
+background:#FFD600;
+border:none;
+font-weight:bold;
+cursor:pointer;
+}
+
+.container{
+background:white;
+padding:20px;
+margin:15px;
+border-radius:12px;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+
+.header{
+background:#FFD600;
+padding:15px;
+text-align:center;
+}
+
+.whatsapp{
+background:#25D366;
+color:white;
+}
 </style>
 </head>
 
 <body>
 
-<div style="text-align:center;padding:10px">
-<img src="logo.png" height="60">
+<div class="header">
+<img src="ridekaro-logo.png" height="60">
 <h2>Ridekaro</h2>
 </div>
 
-<div style="text-align:center">
+<div style="text-align:center;margin-top:10px;">
 <a href="https://wa.me/917051768470">
-<button style="background:green;color:white">Book on WhatsApp</button>
+<button class="whatsapp">Book on WhatsApp</button>
 </a>
 </div>
 
-<div style="padding:20px">
+<div class="container">
 <h3>Login / Signup</h3>
 
 <input id="email" placeholder="email"><br>
@@ -39,7 +80,7 @@ input,button,select{padding:8px;margin:5px}
 <button onclick="login()">Login</button>
 </div>
 
-<div style="padding:20px">
+<div class="container">
 <h3>Book Ride</h3>
 
 <div id="map"></div>
@@ -58,7 +99,10 @@ input,button,select{padding:8px;margin:5px}
 <p id="fare">₹0</p>
 </div>
 
+<div class="container">
+<h3>Your Rides</h3>
 <div id="ridesList"></div>
+</div>
 
 <!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -82,6 +126,7 @@ const db = firebase.firestore();
 
 let pickupLat, pickupLng, dropLat, dropLng;
 
+// MAP
 const map = L.map('map').setView([28.6139,77.2090], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
@@ -103,6 +148,7 @@ dropLng=e.latlng.lng;
 L.marker([dropLat,dropLng]).addTo(map);
 });
 
+// AUTH
 function signup(){
 auth.createUserWithEmailAndPassword(
 email.value,
@@ -122,6 +168,7 @@ loadRides();
 .catch(e=>alert(e.message));
 }
 
+// BOOK RIDE
 function bookRide(){
 if(!auth.currentUser){
 alert("login first");
@@ -131,6 +178,7 @@ return;
 db.collection("rides").add({
 pickup:pickup.value,
 drop:drop.value,
+rideType:rideType.value,
 user:auth.currentUser.email,
 time:new Date()
 }).then(()=>{
@@ -139,6 +187,7 @@ loadRides();
 });
 }
 
+// LOAD RIDES
 function loadRides(){
 db.collection("rides")
 .where("user","==",auth.currentUser.email)
@@ -147,7 +196,7 @@ db.collection("rides")
 let html="";
 snap.forEach(doc=>{
 let d=doc.data();
-html+=<div>${d.pickup} → ${d.drop}</div>;
+html += <div>🚗 ${d.pickup} → ${d.drop}</div>;
 });
 ridesList.innerHTML=html;
 });
@@ -156,4 +205,3 @@ ridesList.innerHTML=html;
 
 </body>
 </html>
-
