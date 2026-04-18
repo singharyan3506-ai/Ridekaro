@@ -263,41 +263,42 @@ window.bookRide = async function () {
 window.addEventListener("load", function () {
 
   var map = L.map('map').setView([32.3865, 75.5173], 10);
+
   map.on('click', function(e) {
 
-  let lat = e.latlng.lat;
-  let lng = e.latlng.lng;
+    let lat = e.latlng.lat;
+    let lng = e.latlng.lng;
 
-  // 🚕 PICKUP
-  if (pickupLat === null) {
+    // PICKUP
+    if (pickupLat === null) {
 
-    pickupLat = lat;
-    pickupLng = lng;
+      pickupLat = lat;
+      pickupLng = lng;
 
-    L.marker([lat, lng]).addTo(map)
-      .bindPopup("📍 Pickup")
-      .openPopup();
+      L.marker([lat, lng]).addTo(map)
+        .bindPopup("📍 Pickup")
+        .openPopup();
 
-    alert("Pickup selected");
-    console.log("Pickup:", pickupLat, pickupLng);
-  }
+      alert("Pickup selected");
+    }
 
-  // 📦 DROP
-  else if (dropLat === null) {
+    // DROP
+    else if (dropLat === null) {
 
-    dropLat = lat;
-    dropLng = lng;
+      dropLat = lat;
+      dropLng = lng;
 
-    L.marker([lat, lng]).addTo(map)
-      .bindPopup("📍 Drop")
-      .openPopup();
+      L.marker([lat, lng]).addTo(map)
+        .bindPopup("📍 Drop")
+        .openPopup();
 
-    alert("Drop selected");
-    console.log("Drop:", dropLat, dropLng);
+      alert("Drop selected");
 
-    calculateFare(); // IMPORTANT
-  }
+      calculateFare();
+    }
 
-});
+  }); // ✅ CLOSE map.on
+
+}); // ✅ CLOSE window load
 </script></body>
 </html>
