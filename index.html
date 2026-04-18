@@ -259,14 +259,19 @@ window.bookRide = async function () {
   document.getElementById("fare").innerText =
     "Estimated Fare: ₹" + Math.round(fare);
 };
-  window.addEventListener("load", function () {
+window.addEventListener("load", function () {
+
+  console.log("MAP START");
 
   var map = L.map('map').setView([32.3865, 75.5173], 10);
 
-  // ✅ ADD THIS (missing in your code)
+  // ✅ VERY IMPORTANT (tile layer)
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
+    attribution: '© OpenStreetMap'
   }).addTo(map);
+
+});
 
   map.on('click', function(e) {
 
