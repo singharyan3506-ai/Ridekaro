@@ -260,65 +260,69 @@ window.bookRide = async function () {
   document.getElementById("fare").innerText =
     "Estimated Fare: ₹" + Math.round(fare);
 };
-  window.addEventListener("load", function () {
+
+
+// 🚀 MAP LOAD
+window.addEventListener("load", function () {
 
   var map = L.map('map');
-
   let dropMarker;
 
-  // 🌍 LIVE LOCATION (Pickup)
-  navigator.geolocation.getCurrentPosition((position) => {
-    
-    let lat = position.coords.latitude;
-    let lng = position.coords.longitude;
-
-    map.setView([lat, lng], 15);
-
-    // 📍 Set Pickup
-    pickupLat = lat;
-    pickupLng = lng;
-
-    L.marker([lat, lng]).addTo(map)
-      .bindPopup("📍 Pickup (Your Location)")
-      .openPopup();
-
-  }, () => {
-    alert("Please allow location access");
-
-    // 📍 Fallback location (if denied)
-    map.setView([28.6139, 77.2090], 10); // Delhi
-  });
-
-  // 🗺️ Map Tiles (VERY IMPORTANT)
+  // 🗺️ Map Tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // 📦 CLICK TO SET DROP LOCATION
-  map.on('click', function(e) {
+  // 🌍 LIVE LOCATION
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
 
-    let lat = e.latlng.lat;
-    let lng = e.latlng.lng;
+        pickupLat = position.coords.latitude;
+        pickupLng = position.coords.longitude;
 
-    dropLat = lat;
-    dropLng = lng;
+        map.setView([pickupLat, pickupLng], 15);
 
-    // ❌ Remove old drop marker
+        // 📍 Pickup marker
+        L.marker([pickupLat, pickupLng]).addTo(map)
+          .bindPopup("📍 Your Location")
+          .openPopup();
+
+      },
+      function () {
+        alert("Please allow location access");
+
+        // fallback
+        map.setView([28.6139, 77.2090], 10);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+      }
+    );
+  }
+
+  // 📦 CLICK → DROP LOCATION
+  map.on('click', function (e) {
+
+    dropLat = e.latlng.lat;
+    dropLng = e.latlng.lng;
+
+    // remove old marker
     if (dropMarker) {
       map.removeLayer(dropMarker);
     }
 
-    // ✅ Add new drop marker
-    dropMarker = L.marker([lat, lng]).addTo(map)
+    // add new marker
+    dropMarker = L.marker([dropLat, dropLng]).addTo(map)
       .bindPopup("📍 Drop Location")
       .openPopup();
 
-    console.log("Drop:", dropLat, dropLng);
-
-    // 💰 Calculate fare
     calculateFare();
   });
 
 });
+</script>
 </script></body>
 </html>
