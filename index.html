@@ -1,334 +1,119 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Leaflet -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <title>Ridekaro - Premium</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
-    body { margin:0; font-family:'Poppins', sans-serif; background:#f9fafb; color:#111; }
-    header { display:flex; justify-content:space-between; padding:20px 40px; background:#111; color:#fff; align-items:center; }
-    header h1 { margin:0; }
-    header button { background:#e63946; border:none; padding:10px 18px; color:white; border-radius:8px; cursor:pointer; }
-    .hero { padding:80px 20px; text-align:center; background:linear-gradient(135deg,#e63946,#ff6b6b); color:white; }
-    .hero h2 { font-size:40px; margin-bottom:10px; }
-    .hero p { font-size:18px; }
-    .hero button { margin-top:20px; padding:14px 28px; font-size:16px; border:none; border-radius:10px; background:#111; color:white; cursor:pointer; }
-    .section { padding:60px 20px; text-align:center; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; max-width:1000px; margin:auto; }
-    .card { background:white; padding:25px; border-radius:16px; box-shadow:0 10px 25px rgba(0,0,0,0.08); transition:0.3s; }
-    .card:hover { transform:translateY(-5px); }
-    .card h3 { margin-bottom:10px; }
-    .cta { background:#111; color:white; padding:60px 20px; }
-    .cta button { margin-top:15px; padding:12px 25px; border:none; background:#e63946; color:white; border-radius:10px; cursor:pointer; }
-    footer { background:#000; color:#aaa; padding:20px; text-align:center; }
+    body { margin:0; font-family:sans-serif; }
+    #map { height:300px; width:100%; }
   </style>
-</head><div style="text-align:center; margin-top:30px;">
-  <a href="https://wa.me/917051768470" target="_blank">
-    <button style="padding:15px; background:green; color:white; border:none; border-radius:10px;">
-      Book on WhatsApp
-    </button>
-  </a>
+</head>
+
+<body>
+
+<h2 style="text-align:center;">Book Your Ride</h2>
+
+<div id="map"></div>
+
+<div style="max-width:400px;margin:auto;padding:20px;">
+  <input type="text" id="pickup" placeholder="Pickup"><br><br>
+  <input type="text" id="drop" placeholder="Drop"><br><br>
+
+  <button onclick="bookRide()">Confirm Booking</button>
+
+  <p id="fare">Estimated Fare: ₹0</p>
 </div>
-<body><h2>Login / Signup</h2>
 
-<input type="email" id="email" placeholder="Enter email">
-<input type="password" id="password" placeholder="Enter password">
-
-<button onclick="signup()">Signup</button>
-<button onclick="login()">Login</button><header>
-  <div style="text-align:center; padding:10px;">
-  <img src="logo.png" alt="Ridekaro Logo" width="150">
-</div>
-  <h1>Ridekaro</h1>
-  <button>Book Ride</button>
-</header><div style="text-align:center; margin-top:20px;">
-  <h2>Login</h2>
-  <input type="text" placeholder="Enter Phone Number"><br><br>
-  <button onclick="alert('Login feature coming soon!')">Login</button>
-</div><div style="text-align:center; margin-top:30px;">
-  <h2>Our Prices</h2>
-  <p>Base Fare: ₹30</p>
-  <p>Per KM: ₹10</p>
-  <p>Waiting Charges: ₹2/min</p>
-</div><section style="padding:40px 20px; text-align:center; background:#fff;">
-  <h2>Book Your Ride</h2>
-  <div id="map" style="height:300px; width:100%; margin-bottom:15px;"></div>
-  <form style="max-width:500px;margin:auto;display:flex;flex-direction:column;gap:15px;">
-    
-    <input type="text" id="pickup"oninput="calculateFare()" placeholder="Enter Pickup Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
-    
-    <input type="text" id="drop"oninput="calculateFare()" placeholder="Enter Drop Location" required style="padding:12px;border-radius:8px;border:1px solid #ccc;">
-    
-    <select id="rideType" style="padding:12px;border-radius:8px;border:1px solid #ccc;">
-      <option>Bike Taxi</option>
-      <option>Parcel Delivery</option>
-      <option>Local Ride</option>
-    </select>
-    
-    <button type="button" onclick="bookRide()" style="padding:14px;background:#e63946;color:white;border:none;border-radius:10px;cursor:pointer;">
-      Confirm Booking
-    </button>
-    <p id="fare" style="font-weight:bold; margin-top:10px;">
-  Estimated Fare: ₹0
-</p>
-  </form>
-</section><h2 style="text-align:center;">My Rides</h2>
-<div id="ridesList" style="max-width:600px;margin:auto;"></div>
-<section class="hero">
-  <h2>Book Bike Taxi in Seconds</h2>
-  <p>Fast • Safe • Affordable rides in your city</p>
-  <button>Start Booking</button>
-</section><section class="section">
-  <h2>Our Services</h2>
-  <div class="grid">
-    <div class="card">
-      <h3>Bike Taxi</h3>
-      <p>Quick and budget-friendly rides</p>
-    </div>
-    <div class="card">
-      <h3>Parcel Delivery</h3>
-      <p>Send packages instantly</p>
-    </div>
-    <div class="card">
-      <h3>Local Rides</h3>
-      <p>Daily commute made easy</p>
-    </div>
-  </div>
-</section><section class="section" style="background:#f1f5f9;">
-  <h2>How It Works</h2>
-  <div class="grid">
-    <div class="card"><h3>1</h3><p>Enter Pickup & Drop</p></div>
-    <div class="card"><h3>2</h3><p>Select Ride</p></div>
-    <div class="card"><h3>3</h3><p>Confirm & Go</p></div>
-  </div>
-</section><section class="section">
-  <h2>Why Choose Ridekaro?</h2>
-  <div class="grid">
-    <div class="card"><h3>Verified Riders</h3></div>
-    <div class="card"><h3>Low Prices</h3></div>
-    <div class="card"><h3>24/7 Support</h3></div>
-    <div class="card"><h3>Fast Pickup</h3></div>
-  </div>
-</section><section class="cta">
-  <h2>Ready to Ride?</h2>
-  <p>Book your first ride with Ridekaro today</p>
-  <button>Book Now</button>
-</section><footer>
-  <p>© 2026 Ridekaro | support@ridekaro.com</p>
-</footer>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-auth.js";
-import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-firestore.js";
-import { getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDq8djWCKZCx9a0evT8n85vYZt8srcxH8o",
-  authDomain: "ridekaro-2237b.firebaseapp.com",
-  projectId: "ridekaro-2237b",
-  storageBucket: "ridekaro-2237b.firebasestorage.app",
-  messagingSenderId: "805660027682",
-  appId: "1:805660027682:web:0117b81f4ec8d341e5d37b",
-  measurementId: "G-NWM50DX01P"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-  import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-auth.js";
-
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    console.log("User logged in:", user.email);
-  } else {
-    console.log("No user logged in");
-  }
-});
-const db = getFirestore(app);
-  let pickupLat = null;
+<script>
+let pickupLat = null;
 let pickupLng = null;
 let dropLat = null;
 let dropLng = null;
-    function getDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
 
+// 📏 Distance
+function getDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
 
   const a =
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) *
-    Math.cos(lat2 * Math.PI / 180) *
-    Math.sin(dLon/2) * Math.sin(dLon/2);
+    Math.sin(dLat/2)**2 +
+    Math.cos(lat1*Math.PI/180) *
+    Math.cos(lat2*Math.PI/180) *
+    Math.sin(dLon/2)**2;
 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-  return R * c;
+  return R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)));
 }
 
-// SIGNUP
-window.signup = async function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    alert("Signup successful");
-  } catch (err) {
-    alert(err.message);
-  }
-};
-
-// LOGIN
-window.login = async function () {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
-    alert("Login successful");
-    loadRides();
-  } catch (err) {
-    alert(err.message);
-  }
-};
-
-// BOOK RIDE (NEW)
-window.bookRide = async function () {
-  const pickup = document.getElementById("pickup").value;
-  const drop = document.getElementById("drop").value;
-  const rideType = document.getElementById("rideType").value;
-
-  if (!auth.currentUser) {
-    alert("Please login first");
-    return;
-  }
-
-  try {
-    await addDoc(collection(db, "rides"), {
-      pickup: pickup,
-      drop: drop,
-      rideType: rideType,
-      user: auth.currentUser.email,
-      time: new Date()
-    });
-
-    alert("Ride booked successfully 🚗");
-    loadRides();
-  } catch (err) {
-    alert(err.message);
-  }
-};window.loadRides = async function () {
-  const user = auth.currentUser;
-
-  if (!user) return;
-
-  const q = query(collection(db, "rides"), where("user", "==", user.email));
-  const querySnapshot = await getDocs(q);
-
-  let html = "";
-
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-
-    html += `
-      <div style="background:white;padding:15px;margin:10px 0;border-radius:10px;">
-        🚗 ${data.pickup} → ${data.drop}<br>
-        📦 ${data.rideType}
-      </div>
-    `;
-  });
-
-  document.getElementById("ridesList").innerHTML = html;
-};
-
+// 💰 Fare
 function calculateFare() {
-
-  console.log("Calculating fare...");
-
-  if (!pickupLat || !dropLat) {
-    console.log("Missing pickup/drop");
-    return;
-  }
+  if (!pickupLat || !dropLat) return;
 
   let distance = getDistance(pickupLat, pickupLng, dropLat, dropLng);
-
   let fare = 30 + (distance * 10);
 
   document.getElementById("fare").innerText =
     "Estimated Fare: ₹" + Math.round(fare);
-
-  console.log("Fare updated:", fare);
 }
 
-
-// 🚀 MAP LOAD
+// 🚀 MAP
 window.addEventListener("load", function () {
 
   var map = L.map('map');
-  let dropMarker;
+  let dropMarker = null; // ✅ FIXED (only once)
 
-  // 🗺️ Map Tiles
+  // Tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
+    attribution: '© OpenStreetMap'
   }).addTo(map);
 
-  // 🌍 LIVE LOCATION
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
+  // 🌍 Location
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      pickupLat = pos.coords.latitude;
+      pickupLng = pos.coords.longitude;
 
-        pickupLat = position.coords.latitude;
-        pickupLng = position.coords.longitude;
+      map.setView([pickupLat, pickupLng], 15);
 
-        map.setView([pickupLat, pickupLng], 15);
+      L.marker([pickupLat, pickupLng]).addTo(map)
+        .bindPopup("📍 Your Location")
+        .openPopup();
+    },
+    () => {
+      alert("Allow location");
+      map.setView([28.6139, 77.2090], 10);
+    }
+  );
 
-        // 📍 Pickup marker
-        L.marker([pickupLat, pickupLng]).addTo(map)
-          .bindPopup("📍 Your Location")
-          .openPopup();
+  // 📦 Drop click
+  map.on('click', function (e) {
 
-      },
-      function () {
-        alert("Please allow location access");
+    dropLat = e.latlng.lat;
+    dropLng = e.latlng.lng;
 
-        // fallback
-        map.setView([28.6139, 77.2090], 10);
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      }
-    );
-  }
+    if (dropMarker) map.removeLayer(dropMarker);
 
-  // 📦 CLICK → DROP LOCATION
-let dropMarker = null;
+    dropMarker = L.marker([dropLat, dropLng]).addTo(map)
+      .bindPopup("📍 Drop Location")
+      .openPopup();
 
-map.on('click', function (e) {
-
-  dropLat = e.latlng.lat;
-  dropLng = e.latlng.lng;
-
-  console.log("Drop set:", dropLat, dropLng);
-
-  // Remove old marker
-  if (dropMarker !== null) {
-    map.removeLayer(dropMarker);
-  }
-
-  // Add new marker
-  dropMarker = L.marker([dropLat, dropLng]).addTo(map)
-    .bindPopup("📍 Drop Location")
-    .openPopup();
-
-  // 🔥 FORCE fare calculation
-  setTimeout(() => {
     calculateFare();
-  }, 200);
+  });
+
 });
-</script></body>
+
+// Dummy function
+function bookRide() {
+  alert("Ride booked!");
+}
+</script>
+
+</body>
 </html>
