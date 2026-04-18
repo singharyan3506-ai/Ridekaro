@@ -2,64 +2,61 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Ridekaro</title>
-
-  <!-- Leaflet -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <title>Ridekaro - Premium</title>
 
   <style>
     body { margin:0; font-family:sans-serif; }
-    header { background:#111; color:white; padding:15px; text-align:center; }
     #map { height:300px; width:100%; }
-    input, button, select {
-      width:100%; padding:10px; margin:8px 0;
-    }
-    button { background:red; color:white; border:none; }
   </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
-<header>
-  <img src="logo.png" width="120"><br>
-  <h2>Ridekaro</h2>
-</header>
+<!-- ✅ WhatsApp Button (UNCHANGED) -->
+<div style="text-align:center; margin-top:20px;">
+  <a href="https://wa.me/917051768470" target="_blank">
+    <button style="padding:15px; background:green; color:white; border:none; border-radius:10px;">
+      Book on WhatsApp
+    </button>
+  </a>
+</div>
 
-<!-- LOGIN -->
+<!-- ✅ LOGIN -->
 <div style="padding:20px;">
-  <h3>Login / Signup</h3>
+  <h2>Login / Signup</h2>
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
+  <input type="email" id="email" placeholder="Enter email"><br><br>
+  <input type="password" id="password" placeholder="Enter password"><br><br>
 
   <button onclick="signup()">Signup</button>
   <button onclick="login()">Login</button>
 </div>
 
-<!-- MAP + BOOK -->
+<!-- ✅ MAP -->
 <div style="padding:20px;">
-  <h3>Book Ride</h3>
+  <h2>Book Your Ride</h2>
 
   <div id="map"></div>
 
-  <input id="pickup" placeholder="Pickup">
-  <input id="drop" placeholder="Drop">
+  <input id="pickup" placeholder="Pickup"><br>
+  <input id="drop" placeholder="Drop"><br>
 
   <select id="rideType">
     <option>Bike Taxi</option>
-    <option>Parcel</option>
-  </select>
+    <option>Parcel Delivery</option>
+    <option>Local Ride</option>
+  </select><br><br>
 
   <button onclick="bookRide()">Confirm Booking</button>
 
   <p id="fare">Estimated Fare: ₹0</p>
 </div>
 
-<!-- RIDES -->
 <div id="ridesList"></div>
 
 <script type="module">
@@ -67,20 +64,24 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.0/firebas
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.2.0/firebase-firestore.js";
 
+// ✅ YOUR FIREBASE CONFIG (UNCHANGED)
 const firebaseConfig = {
-  apiKey: "YOUR_KEY",
-  authDomain: "YOUR_DOMAIN",
-  projectId: "YOUR_ID"
+  apiKey: "AIzaSyDq8djWCKZCx9a0evT8n85vYZt8srcxH8o",
+  authDomain: "ridekaro-2237b.firebaseapp.com",
+  projectId: "ridekaro-2237b",
+  storageBucket: "ridekaro-2237b.firebasestorage.app",
+  messagingSenderId: "805660027682",
+  appId: "1:805660027682:web:0117b81f4ec8d341e5d37b"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// VARIABLES
+// ✅ VARIABLES
 let pickupLat=null, pickupLng=null, dropLat=null, dropLng=null;
 
-// DISTANCE
+// 📏 DISTANCE
 function getDistance(a,b,c,d){
   const R=6371;
   const dLat=(c-a)*Math.PI/180;
@@ -90,14 +91,14 @@ function getDistance(a,b,c,d){
   return R*(2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)));
 }
 
-// FARE
+// 💰 FARE
 function calculateFare(){
   if(!pickupLat||!dropLat) return;
   let fare=30+(getDistance(pickupLat,pickupLng,dropLat,dropLng)*10);
   document.getElementById("fare").innerText="Estimated Fare: ₹"+Math.round(fare);
 }
 
-// MAP
+// 🚀 MAP
 window.addEventListener("load",()=>{
   var map=L.map('map');
   let dropMarker=null;
@@ -111,7 +112,7 @@ window.addEventListener("load",()=>{
     map.setView([pickupLat,pickupLng],15);
 
     L.marker([pickupLat,pickupLng]).addTo(map)
-      .bindPopup("You are here").openPopup();
+      .bindPopup("📍 Your Location").openPopup();
   });
 
   map.on('click',e=>{
@@ -120,33 +121,82 @@ window.addEventListener("load",()=>{
 
     if(dropMarker) map.removeLayer(dropMarker);
 
-    dropMarker=L.marker([dropLat,dropLng]).addTo(map);
+    dropMarker=L.marker([dropLat,dropLng]).addTo(map)
+      .bindPopup("📍 Drop Location").openPopup();
 
     calculateFare();
   });
 });
 
-// AUTH
-window.signup=async()=>{
-  await createUserWithEmailAndPassword(auth,email.value,password.value);
-  alert("Signup success");
+// ✅ FIXED AUTH (IMPORTANT)
+window.signup = async function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    alert("Signup successful ✅");
+  } catch (err) {
+    alert(err.message);
+  }
 };
 
-window.login=async()=>{
-  await signInWithEmailAndPassword(auth,email.value,password.value);
-  alert("Login success");
+window.login = async function () {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    alert("Login successful ✅");
+    loadRides();
+  } catch (err) {
+    alert(err.message);
+  }
 };
 
-// BOOK
-window.bookRide=async()=>{
-  if(!auth.currentUser) return alert("Login first");
+// ✅ FIXED BOOKING
+window.bookRide = async function () {
+  const pickup = document.getElementById("pickup").value;
+  const drop = document.getElementById("drop").value;
+  const rideType = document.getElementById("rideType").value;
 
-  await addDoc(collection(db,"rides"),{
-    pickup,drop,rideType,user:auth.currentUser.email
+  if (!auth.currentUser) {
+    alert("Please login first");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "rides"), {
+      pickup: pickup,
+      drop: drop,
+      rideType: rideType,
+      user: auth.currentUser.email,
+      time: new Date()
+    });
+
+    alert("Ride booked successfully 🚗");
+    loadRides();
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
+// LOAD RIDES
+async function loadRides(){
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const q = query(collection(db, "rides"), where("user", "==", user.email));
+  const snapshot = await getDocs(q);
+
+  let html="";
+  snapshot.forEach(doc=>{
+    let d=doc.data();
+    html+=`<div>🚗 ${d.pickup} → ${d.drop}</div>`;
   });
 
-  alert("Booked!");
-};
+  document.getElementById("ridesList").innerHTML = html;
+}
 </script>
 
 </body>
