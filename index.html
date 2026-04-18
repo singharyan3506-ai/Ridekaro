@@ -16,24 +16,10 @@ margin:0;
 background:#fffdf5;
 }
 
-#map{
-height:300px;
-border-radius:10px;
-}
-
-input,button,select{
-padding:12px;
-margin:6px;
-font-size:16px;
-border-radius:8px;
-border:1px solid #ddd;
-}
-
-button{
+.header{
 background:#FFD600;
-border:none;
-font-weight:bold;
-cursor:pointer;
+padding:15px;
+text-align:center;
 }
 
 .container{
@@ -44,15 +30,31 @@ border-radius:12px;
 box-shadow:0 2px 10px rgba(0,0,0,0.05);
 }
 
-.header{
+input,select,button{
+padding:12px;
+margin:6px 0;
+width:100%;
+font-size:16px;
+border-radius:8px;
+border:1px solid #ddd;
+}
+
+button{
 background:#FFD600;
-padding:15px;
-text-align:center;
+font-weight:bold;
+border:none;
+cursor:pointer;
 }
 
 .whatsapp{
 background:#25D366;
 color:white;
+width:auto;
+}
+
+#map{
+height:300px;
+border-radius:10px;
 }
 </style>
 </head>
@@ -64,7 +66,7 @@ color:white;
 <h2>Ridekaro</h2>
 </div>
 
-<div style="text-align:center;margin-top:10px;">
+<div style="text-align:center;margin:10px;">
 <a href="https://wa.me/917051768470">
 <button class="whatsapp">Book on WhatsApp</button>
 </a>
@@ -73,8 +75,8 @@ color:white;
 <div class="container">
 <h3>Login / Signup</h3>
 
-<input id="email" placeholder="email"><br>
-<input id="password" type="password" placeholder="password"><br>
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 
 <button onclick="signup()">Signup</button>
 <button onclick="login()">Login</button>
@@ -85,18 +87,16 @@ color:white;
 
 <div id="map"></div>
 
-<input id="pickup" placeholder="pickup"><br>
-<input id="drop" placeholder="drop"><br>
+<input id="pickup" placeholder="Pickup">
+<input id="drop" placeholder="Drop">
 
 <select id="rideType">
 <option>Bike Taxi</option>
-<option>Parcel</option>
+<option>Parcel Delivery</option>
 <option>Local Ride</option>
-</select><br>
+</select>
 
-<button onclick="bookRide()">Confirm</button>
-
-<p id="fare">₹0</p>
+<button onclick="bookRide()">Confirm Booking</button>
 </div>
 
 <div class="container">
@@ -104,7 +104,16 @@ color:white;
 <div id="ridesList"></div>
 </div>
 
-<!-- Firebase -->
+<div class="container">
+<h3>Admin Panel</h3>
+<div id="adminRides"></div>
+</div>
+
+<div class="container">
+<h3>Rider Panel</h3>
+<div id="riderRides"></div>
+</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -126,7 +135,6 @@ const db = firebase.firestore();
 
 let pickupLat, pickupLng, dropLat, dropLng;
 
-// MAP
 const map = L.map('map').setView([28.6139,77.2090], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
@@ -137,7 +145,6 @@ pickupLat=pos.coords.latitude;
 pickupLng=pos.coords.longitude;
 
 map.setView([pickupLat,pickupLng],15);
-
 L.marker([pickupLat,pickupLng]).addTo(map);
 });
 
@@ -148,30 +155,26 @@ dropLng=e.latlng.lng;
 L.marker([dropLat,dropLng]).addTo(map);
 });
 
-// AUTH
 function signup(){
-auth.createUserWithEmailAndPassword(
-email.value,
-password.value
-).then(()=>alert("Signup success"))
+auth.createUserWithEmailAndPassword(email.value,password.value)
+.then(()=>alert("Signup success"))
 .catch(e=>alert(e.message));
 }
 
 function login(){
-auth.signInWithEmailAndPassword(
-email.value,
-password.value
-).then(()=>{
+auth.signInWithEmailAndPassword(email.value,password.value)
+.then(()=>{
 alert("Login success");
 loadRides();
+loadAdmin();
+loadRider();
 })
 .catch(e=>alert(e.message));
 }
 
-// BOOK RIDE
 function bookRide(){
 if(!auth.currentUser){
-alert("login first");
+alert("Login first");
 return;
 }
 
@@ -180,14 +183,16 @@ pickup:pickup.value,
 drop:drop.value,
 rideType:rideType.value,
 user:auth.currentUser.email,
+status:"pending",
+rider:null,
 time:new Date()
 }).then(()=>{
 alert("Ride booked");
 loadRides();
+loadAdmin();
 });
 }
 
-// LOAD RIDES
 function loadRides(){
 db.collection("rides")
 .where("user","==",auth.currentUser.email)
@@ -196,10 +201,72 @@ db.collection("rides")
 let html="";
 snap.forEach(doc=>{
 let d=doc.data();
-html += <div>🚗 ${d.pickup} → ${d.drop}</div>;
+html += <div>🚗 ${d.pickup} → ${d.drop} (${d.status})</div>;
 });
 ridesList.innerHTML=html;
 });
+}
+
+function loadAdmin(){
+db.collection("rides")
+.where("status","==","pending")
+.get()
+.then(snap=>{
+let html="";
+snap.forEach(doc=>{
+let d=doc.data();
+html+=`
+<div>
+${d.pickup} → ${d.drop}
+<br>
+<button onclick="assign('${doc.id}','rider1@gmail.com')">Rider1</button>
+<button onclick="assign('${doc.id}','rider2@gmail.com')">Rider2</button>
+</div>
+`;
+});
+adminRides.innerHTML=html;
+});
+}
+
+function assign(id,rider){
+db.collection("rides").doc(id).update({
+rider:rider,
+status:"assigned"
+});
+loadAdmin();
+}
+
+function loadRider(){
+if(!auth.currentUser) return;
+
+db.collection("rides")
+.where("rider","==",auth.currentUser.email)
+.get()
+.then(snap=>{
+let html="";
+snap.forEach(doc=>{
+let d=doc.data();
+html+=`
+<div>
+${d.pickup} → ${d.drop}
+<br>
+<button onclick="accept('${doc.id}')">Accept</button>
+<button onclick="reject('${doc.id}')">Reject</button>
+</div>
+`;
+});
+riderRides.innerHTML=html;
+});
+}
+
+function accept(id){
+db.collection("rides").doc(id).update({status:"accepted"});
+loadRider();
+}
+
+function reject(id){
+db.collection("rides").doc(id).update({status:"rejected"});
+loadRider();
 }
 </script>
 
