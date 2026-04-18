@@ -244,9 +244,14 @@ window.bookRide = async function () {
   document.getElementById("ridesList").innerHTML = html;
 };
 
-  window.calculateFare = function () {
+ window.calculateFare = function () {
 
-  if (!pickupLat || !dropLat) return;
+  console.log("Fare triggered");
+
+  if (pickupLat === null || dropLat === null) {
+    console.log("Missing coordinates");
+    return;
+  }
 
   let distance = getDistance(pickupLat, pickupLng, dropLat, dropLng);
 
@@ -263,8 +268,9 @@ window.addEventListener("load", function () {
   let lat = e.latlng.lat;
   let lng = e.latlng.lng;
 
-  // FIRST CLICK = PICKUP
-  if (!pickupLat) {
+  // 🚕 PICKUP
+  if (pickupLat === null) {
+
     pickupLat = lat;
     pickupLng = lng;
 
@@ -273,10 +279,12 @@ window.addEventListener("load", function () {
       .openPopup();
 
     alert("Pickup selected");
+    console.log("Pickup:", pickupLat, pickupLng);
   }
 
-  // SECOND CLICK = DROP
-  else {
+  // 📦 DROP
+  else if (dropLat === null) {
+
     dropLat = lat;
     dropLng = lng;
 
@@ -285,34 +293,11 @@ window.addEventListener("load", function () {
       .openPopup();
 
     alert("Drop selected");
+    console.log("Drop:", dropLat, dropLng);
 
-    calculateFare();
+    calculateFare(); // IMPORTANT
   }
 
 });
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'OpenStreetMap'
-  }).addTo(map);
-
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-
-      let lat = position.coords.latitude;
-      let lng = position.coords.longitude;
-
-      map.setView([lat, lng], 15);
-
-      L.marker([lat, lng]).addTo(map)
-        .bindPopup("📍 You are here")
-        .openPopup();
-
-    });
-  }
-
-});
-      
-
- 
 </script></body>
 </html>
