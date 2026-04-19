@@ -88,12 +88,10 @@ button{background:#f4c430;border:none;cursor:pointer;font-weight:bold;}
 <p>Kathua - College Road, Bus Stand, Main Market</p>
 </div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-<!-- EmailJS -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
 <script>
@@ -112,9 +110,10 @@ const db = firebase.firestore();
 
 let pickupLat,pickupLng,dropLat,dropLng;
 let routeLine;
+let dropMarker; // ✅ ONLY ONE DROP MARKER
 let bikeMarkers = [];
 
-// 🔴 ADDED: RED ICON
+// 🔴 RED ICON
 const redBikeIcon = new L.Icon({
 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
 shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
@@ -145,7 +144,13 @@ map.on('click',e=>{
 dropLat=e.latlng.lat;
 dropLng=e.latlng.lng;
 
-L.marker([dropLat,dropLng]).addTo(map);
+// ✅ remove old marker
+if(dropMarker){
+map.removeLayer(dropMarker);
+}
+
+// ✅ add new marker
+dropMarker = L.marker([dropLat,dropLng]).addTo(map);
 
 drawRoute();
 calculateFare();
@@ -169,7 +174,6 @@ weight:5
 map.fitBounds(routeLine.getBounds());
 }
 
-// 🔴 UPDATED: only 2–3 bikes + red icon
 function showNearbyBikes(){
 
 if(!pickupLat) return;
@@ -177,7 +181,7 @@ if(!pickupLat) return;
 bikeMarkers.forEach(b => map.removeLayer(b));
 bikeMarkers = [];
 
-// random 2 or 3 bikes
+// ✅ only 2–3 bikes
 let count = Math.floor(Math.random()*2)+2;
 
 for(let i=0;i<count;i++){
