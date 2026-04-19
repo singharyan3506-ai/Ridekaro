@@ -57,7 +57,8 @@ img{width:100%;margin-top:10px;border-radius:10px;}
 <div id="map"></div>
 
 <input id="pickup" placeholder="Pickup location">
-<input id="drop" placeholder="Drop location" onblur="searchDropLocation()">
+<!-- ❌ REMOVED onblur -->
+<input id="drop" placeholder="Drop location">
 
 <select id="rideType">
 <option>Bike Taxi</option>
@@ -70,50 +71,8 @@ img{width:100%;margin-top:10px;border-radius:10px;}
 <p id="distance">Distance: 0 km</p>
 </div>
 
-<!-- ✅ RIDERS WITH IMAGES -->
-<div class="container">
-<h3>Riders Available</h3>
-
-<p><b>Rider 1:</b></p>
-<p>Bike: Hero Splendor Plus HF Deluxe</p>
-<p>Bike Number: JK08L8665</p>
-<p>Phone: 7006875689</p>
-
-<img src="rider1_1.jpg">
-<img src="rider1_2.jpg">
-
-<hr>
-
-<p><b>Rider 2:</b></p>
-<p>Bike: Royal Enfield Bullet</p>
-<p>Bike Number: JK08R4310</p>
-<p>Phone: 6006582698</p>
-
-<img src="rider2_1.jpg">
-<img src="rider2_2.jpg">
-
-</div>
-
-<div class="container">
-<h3>How It Works</h3>
-<p>1. Enter pickup & drop</p>
-<p>2. See fare instantly</p>
-<p>3. Confirm on WhatsApp</p>
-<p>4. Rider arrives 🚀</p>
-</div>
-
-<div class="container">
-<h3>Why Choose RideKaro?</h3>
-<p>✔ Verified Local Rider</p>
-<p>✔ Safe & Affordable</p>
-<p>✔ Fast Pickup in Kathua</p>
-<p>✔ Easy WhatsApp Booking</p>
-</div>
-
-<div class="container">
-<h3>Service Area</h3>
-<p>Kathua - College Road, Bus Stand, Main Market</p>
-</div>
+<!-- GOOGLE PLACES API ✅ -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -180,22 +139,24 @@ drawRoute();
 calculateFare();
 });
 
-function searchDropLocation(){
+/* ✅ GOOGLE AUTOCOMPLETE FIX */
+window.onload = function(){
 
-let place = document.getElementById("drop").value;
-if(!place) return;
+let dropInput = document.getElementById("drop");
 
-fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`)
-.then(res => res.json())
-.then(data => {
+let autocomplete = new google.maps.places.Autocomplete(dropInput);
 
-if(data.length === 0){
+autocomplete.addListener("place_changed", function(){
+
+let place = autocomplete.getPlace();
+
+if(!place.geometry){
 alert("Location not found");
 return;
 }
 
-dropLat = parseFloat(data[0].lat);
-dropLng = parseFloat(data[0].lon);
+dropLat = place.geometry.location.lat();
+dropLng = place.geometry.location.lng();
 
 if(dropMarker){
 map.removeLayer(dropMarker);
@@ -210,7 +171,7 @@ calculateFare();
 
 });
 
-}
+};
 
 function drawRoute(){
 if(!pickupLat || !dropLat) return;
