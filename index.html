@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -114,6 +113,9 @@ const db = firebase.firestore();
 let pickupLat,pickupLng,dropLat,dropLng;
 let routeLine;
 
+// ✅ ADDED: nearby bikes storage
+let bikeMarkers = [];
+
 const map = L.map('map').setView([28.6139,77.2090], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
@@ -128,6 +130,9 @@ document.getElementById("pickup").value = "Current Location";
 
 map.setView([pickupLat,pickupLng],15);
 L.marker([pickupLat,pickupLng]).addTo(map);
+
+// ✅ ADDED: show nearby bikes
+showNearbyBikes();
 });
 
 // ✅ Map click for drop
@@ -141,7 +146,7 @@ drawRoute();
 calculateFare();
 });
 
-// ✅ Draw route
+// ✅ UPDATED: Draw route (with auto zoom)
 function drawRoute(){
 if(!pickupLat || !dropLat) return;
 
@@ -152,7 +157,36 @@ map.removeLayer(routeLine);
 routeLine = L.polyline([
 [pickupLat,pickupLng],
 [dropLat,dropLng]
-],{color:'blue'}).addTo(map);
+],{
+color:'blue',
+weight:5
+}).addTo(map);
+
+// auto zoom
+map.fitBounds(routeLine.getBounds());
+}
+
+// ✅ ADDED: Nearby bikes function
+function showNearbyBikes(){
+
+if(!pickupLat) return;
+
+// remove old
+bikeMarkers.forEach(b => map.removeLayer(b));
+bikeMarkers = [];
+
+for(let i=0;i<5;i++){
+
+let lat = pickupLat + (Math.random()-0.5)/500;
+let lng = pickupLng + (Math.random()-0.5)/500;
+
+let bike = L.marker([lat,lng])
+.addTo(map)
+.bindPopup("🚲 RideKaro Bike Nearby");
+
+bikeMarkers.push(bike);
+}
+
 }
 
 // ✅ Distance calculation
