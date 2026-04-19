@@ -110,9 +110,6 @@ img{width:100%;margin-top:10px;border-radius:10px;}
 <p>Kathua - College Road, Hatli Morh, Main Market, Bus Stand</p>
 </div>
 
-<!-- GOOGLE PLACES -->
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
-
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -134,9 +131,13 @@ let pickupLat,pickupLng,dropLat,dropLng;
 let routeLine, dropMarker;
 let bikeMarkers = [];
 
-const map = L.map('map').setView([32.3861,75.5170], 13);
+// ✅ IMPROVED FREE MAP (ONLY CHANGE)
+const map = L.map('map').setView([32.3861,75.5170], 14);
 
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+maxZoom: 19,
+attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
 
 // LOCATION
 navigator.geolocation.getCurrentPosition(pos=>{
@@ -163,40 +164,6 @@ dropMarker=L.marker([dropLat,dropLng]).addTo(map);
 drawRoute();
 calculateFare();
 });
-
-// GOOGLE AUTOCOMPLETE (KATHUA)
-window.onload=function(){
-
-let bounds=new google.maps.LatLngBounds(
-new google.maps.LatLng(32.35,75.48),
-new google.maps.LatLng(32.42,75.55)
-);
-
-let auto=new google.maps.places.Autocomplete(
-document.getElementById("drop"),
-{bounds:bounds,componentRestrictions:{country:"in"}}
-);
-
-auto.addListener("place_changed",function(){
-
-let place=auto.getPlace();
-if(!place.geometry) return;
-
-dropLat=place.geometry.location.lat();
-dropLng=place.geometry.location.lng();
-
-if(dropMarker) map.removeLayer(dropMarker);
-
-dropMarker=L.marker([dropLat,dropLng]).addTo(map);
-
-map.setView([dropLat,dropLng],15);
-
-drawRoute();
-calculateFare();
-
-});
-
-};
 
 // ROUTE
 function drawRoute(){
@@ -235,7 +202,9 @@ return R*(2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)));
 // FARE
 function calculateFare(){
 if(!pickupLat||!dropLat) return;
+
 let d=getDistance(pickupLat,pickupLng,dropLat,dropLng);
+
 document.getElementById("distance").innerHTML="Distance: "+d.toFixed(2)+" km";
 document.getElementById("fare").innerHTML="Estimated Fare: ₹"+Math.round(25+d*7);
 }
