@@ -133,11 +133,17 @@ Rider will also verify the distance in front of you.
 </p>
 
 <p id="fare">
-Fare: Rider will tell you final fare on WhatsApp after booking.
+Fare Formula: <b>Total KM Distance × ₹7 + ₹25 (Platform Fees)</b>
+
 <br><br>
-You can calculate estimated fare yourself:
-<b>Total Distance × ₹7 per km</b>
+
+Rider will tell you final fare on WhatsApp once you book the ride.
+
+<br><br>
+
+You can also calculate your estimated fare by yourself using the above formula.
 </p>
+
 </div>
 
 <!-- RIDERS -->
@@ -333,7 +339,7 @@ function openDropMap() {
 (function(){
     emailjs.init("szp9VSLWIoqh_DW6P");
 })();
-   function calculateFare() {
+    function calculateFare() {
     let pickup = document.getElementById("pickup").value;
     let drop = document.getElementById("drop").value;
 
@@ -346,8 +352,10 @@ function openDropMap() {
         "Distance: Please check total distance using Google Maps on your phone.<br>Rider will also verify the distance in front of you.";
 
     document.getElementById("fare").innerHTML =
-        "Fare: Rider will tell you final fare on WhatsApp after booking.<br><br><b>You can calculate estimated fare yourself: Total Distance × ₹7 per km</b>";
-}</script>
+        "Fare Formula: <b>Total KM Distance × ₹7 + ₹25 (Platform Fees)</b><br><br>Rider will tell you final fare on WhatsApp once you book the ride.<br><br>You can also calculate your estimated fare by yourself using the above formula.";
+}
+  
+</script>
 
 </body>
 </html>
