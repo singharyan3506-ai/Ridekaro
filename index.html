@@ -10,261 +10,419 @@
 <link rel="icon" href="logo.png">
 
 <style>
-body{font-family:sans-serif;margin:0;background:#fff;}
-.header{background:#f4c430;text-align:center;padding:15px;}
-.header img{height:60px;display:block;margin:auto;}
-.header h2{margin:5px;}
-.container{padding:20px;}
-input,button,select{padding:12px;margin:5px 0;width:100%;font-size:16px;}
-button{background:#f4c430;border:none;cursor:pointer;font-weight:bold;}
-#map{height:300px;margin-top:10px;}
-img{width:100%;margin-top:10px;border-radius:10px;}
+body{
+    font-family:sans-serif;
+    margin:0;
+    background:#fff;
+}
+
+.header{
+    background:#f4c430;
+    text-align:center;
+    padding:15px;
+}
+
+.header img{
+    height:60px;
+    display:block;
+    margin:auto;
+}
+
+.header h2{
+    margin:5px;
+}
+
+.container{
+    padding:20px;
+}
+
+input, button, select{
+    padding:12px;
+    margin:5px 0;
+    width:100%;
+    font-size:16px;
+    box-sizing:border-box;
+}
+
+button{
+    background:#f4c430;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+#map{
+    height:300px;
+    margin-top:10px;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+img{
+    width:100%;
+    margin-top:10px;
+    border-radius:10px;
+}
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <div class="header">
-<img src="logo.png">
-<h2>Ridekaro</h2>
+    <img src="logo.png" alt="Ridekaro Logo">
 
-<p><b>Bike Taxi Service in Kathua</b></p>
-<p>Starting ₹25 | ₹7 per km</p>
-<p><b>⚡ Pickup in 10–15 minutes</b></p>
-<p><b>Head Office Address: Shaheedi Chowk, Kathua</b></p>
+    <h2>Ridekaro</h2>
 
-<a href="https://wa.me/917051768470?text=Hi%20RideKaro,%20I%20want%20to%20book%20a%20ride.%0APickup:%0ADrop:%0ATime:" target="_blank">
-<button style="background:green;color:white;width:250px;font-size:18px">
-🚀 Book Ride Instantly
-</button>
-</a>
+    <p><b>Bike Taxi Service in Kathua</b></p>
+    <p>Starting ₹25 | ₹7 per km</p>
+    <p><b>⚡ Pickup in 10–15 minutes</b></p>
+    <p><b>Head Office Address: Shaheedi Chowk, Kathua</b></p>
 
-<a href="tel:7051768470">
-<button style="background:black;color:white;width:250px;font-size:18px">
-📞 Call for Instant Ride
-</button>
-</a>
+    <a href="https://wa.me/917051768470?text=Hi%20RideKaro,%20I%20want%20to%20book%20a%20ride.%0APickup:%0ADrop:%0ATime:" target="_blank">
+        <button style="background:green;color:white;width:250px;font-size:18px;">
+            🚀 Book Ride Instantly
+        </button>
+    </a>
+
+    <br>
+
+    <a href="tel:7051768470">
+        <button style="background:black;color:white;width:250px;font-size:18px;">
+            📞 Call for Instant Ride
+        </button>
+    </a>
 </div>
 
+<!-- BOOK RIDE -->
 <div class="container">
-<h3>Book Ride</h3>
-<p><b>👉 Tap on map OR type location</b></p>
+    <h3>Book Ride</h3>
+    <p><b>👉 Tap on map OR type location</b></p>
 
-<div id="map"></div>
+    <div id="map"></div>
 
-<input id="pickup" placeholder="Pickup location">
-<input id="drop" placeholder="Drop location">
+    <input id="pickup" placeholder="Pickup location">
+    <input id="drop" placeholder="Drop location">
 
-<select id="rideType">
-<option>Bike Taxi</option>
-<option>Parcel Delivery</option>
-<option>Local Ride</option>
-</select>
+    <select id="rideType">
+        <option>Bike Taxi</option>
+        <option>Parcel Delivery</option>
+        <option>Local Ride</option>
+    </select>
 
-<button onclick="bookRide()">Confirm Booking</button>
-<p id="fare">Estimated Fare: ₹0</p>
-<p id="distance">Distance: 0 km</p>
+    <button onclick="bookRide()">Confirm Booking</button>
+
+    <p id="fare">Estimated Fare: ₹0</p>
+    <p id="distance">Distance: 0 km</p>
 </div>
 
 <!-- RIDERS -->
 <div class="container">
-<h3>Riders Available</h3>
+    <h3>Riders Available</h3>
 
-<p><b>Rider 1:</b></p>
-<p>Bike: Hero Splendor Plus HF Deluxe</p>
-<p>Bike Number: JK08L8665</p>
-<p>Phone: 7006875689</p>
+    <p><b>Rider 1:</b></p>
+    <p>Bike: Hero Splendor Plus HF Deluxe</p>
+    <p>Bike Number: JK08L8665</p>
+    <p>Phone: 7006875689</p>
 
-<img src="rider1_1.jpg">
-<img src="rider1_2.jpg">
+    <img src="rider1_1.jpg" alt="">
+    <img src="rider1_2.jpg" alt="">
 
-<hr>
+    <hr>
 
-<p><b>Rider 2:</b></p>
-<p>Bike: Royal Enfield Bullet</p>
-<p>Bike Number: JK08R4310</p>
-<p>Phone: 6006582698</p>
+    <p><b>Rider 2:</b></p>
+    <p>Bike: Royal Enfield Bullet</p>
+    <p>Bike Number: JK08R4310</p>
+    <p>Phone: 6006582698</p>
 
-<img src="rider2_1.jpg">
-<img src="rider2_2.jpg">
+    <img src="rider2_1.jpg" alt="">
+    <img src="rider2_2.jpg" alt="">
 </div>
 
+<!-- HOW IT WORKS -->
 <div class="container">
-<h3>How It Works</h3>
-<p>1. Enter pickup & drop</p>
-<p>2. See fare instantly</p>
-<p>3. Confirm on WhatsApp</p>
-<p>4. Rider arrives 🚀</p>
+    <h3>How It Works</h3>
+    <p>1. Enter pickup & drop</p>
+    <p>2. See fare instantly</p>
+    <p>3. Confirm on WhatsApp</p>
+    <p>4. Rider arrives 🚀</p>
 </div>
 
+<!-- WHY CHOOSE -->
 <div class="container">
-<h3>Why Choose RideKaro?</h3>
-<p>✔ Verified Local Rider</p>
-<p>✔ Safe & Affordable</p>
-<p>✔ Fast Pickup in Kathua</p>
-<p>✔ Easy WhatsApp Booking</p>
+    <h3>Why Choose RideKaro?</h3>
+    <p>✔ Verified Local Rider</p>
+    <p>✔ Safe & Affordable</p>
+    <p>✔ Fast Pickup in Kathua</p>
+    <p>✔ Easy WhatsApp Booking</p>
 </div>
 
+<!-- SERVICE AREA -->
 <div class="container">
-<h3>Service Area</h3>
-<p>Kathua - College Road, Hatli Morh, Main Market, Bus Stand</p>
+    <h3>Service Area</h3>
+    <p>Kathua - College Road, Hatli Morh, Main Market, Bus Stand</p>
 </div>
 
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
+<!-- EMAILJS -->
 <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 
 <script>
 
+/* =========================
+   FIREBASE CONFIG
+========================= */
+
 const firebaseConfig = {
-apiKey: "AIzaSyDq8djWCKZCx9a0evT8n85vYZt8srcxH8o",
-authDomain: "ridekaro-2237b.firebaseapp.com",
-projectId: "ridekaro-2237b"
+    apiKey: "AIzaSyDq8djWCKZCx9a0evT8n85vYZt8srcxH8o",
+    authDomain: "ridekaro-2237b.firebaseapp.com",
+    projectId: "ridekaro-2237b"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-let pickupLat,pickupLng,dropLat,dropLng;
-let routeLine, dropMarker;
+/* =========================
+   VARIABLES
+========================= */
+
+let pickupLat, pickupLng;
+let dropLat, dropLng;
+
+let routeLine;
+let dropMarker;
 let bikeMarkers = [];
 
-// ✅ IMPROVED FREE MAP (ONLY CHANGE)
-const map = L.map('map').setView([32.3861,75.5170], 14);
+/* =========================
+   IMPROVED DETAILED MAP
+========================= */
 
-L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
-maxZoom: 19,
-attribution: '&copy; OpenStreetMap contributors'
+const map = L.map('map').setView([32.3861, 75.5170], 16);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 20,
+    attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// LOCATION
-navigator.geolocation.getCurrentPosition(pos=>{
-pickupLat=pos.coords.latitude;
-pickupLng=pos.coords.longitude;
+/* =========================
+   GET CURRENT LOCATION
+========================= */
 
-document.getElementById("pickup").value="Current Location";
+navigator.geolocation.getCurrentPosition(
+function(pos){
 
-map.setView([pickupLat,pickupLng],15);
-L.marker([pickupLat,pickupLng]).addTo(map);
+    pickupLat = pos.coords.latitude;
+    pickupLng = pos.coords.longitude;
 
-showNearbyBikes();
+    document.getElementById("pickup").value = "Current Location";
+
+    map.setView([pickupLat, pickupLng], 16);
+
+    L.marker([pickupLat, pickupLng]).addTo(map);
+
+    showNearbyBikes();
+},
+function(){
+    alert("Location access denied. Please allow location.");
+}
+);
+
+/* =========================
+   MAP CLICK FOR DROP
+========================= */
+
+map.on('click', function(e){
+
+    dropLat = e.latlng.lat;
+    dropLng = e.latlng.lng;
+
+    if(dropMarker){
+        map.removeLayer(dropMarker);
+    }
+
+    dropMarker = L.marker([dropLat, dropLng]).addTo(map);
+
+    document.getElementById("drop").value =
+        dropLat.toFixed(5) + ", " + dropLng.toFixed(5);
+
+    drawRoute();
+    calculateFare();
 });
 
-// MAP CLICK
-map.on('click',e=>{
-dropLat=e.latlng.lat;
-dropLng=e.latlng.lng;
+/* =========================
+   DRAW ROUTE
+========================= */
 
-if(dropMarker) map.removeLayer(dropMarker);
-
-dropMarker=L.marker([dropLat,dropLng]).addTo(map);
-
-drawRoute();
-calculateFare();
-});
-
-// ROUTE
 function drawRoute(){
-if(!pickupLat||!dropLat) return;
 
-if(routeLine) map.removeLayer(routeLine);
+    if(!pickupLat || !dropLat) return;
 
-routeLine=L.polyline([[pickupLat,pickupLng],[dropLat,dropLng]],{color:'blue'}).addTo(map);
+    if(routeLine){
+        map.removeLayer(routeLine);
+    }
 
-map.fitBounds(routeLine.getBounds());
+    routeLine = L.polyline(
+        [
+            [pickupLat, pickupLng],
+            [dropLat, dropLng]
+        ],
+        {
+            color: 'blue',
+            weight: 4
+        }
+    ).addTo(map);
+
+    map.fitBounds(routeLine.getBounds());
 }
 
-// BIKES
+/* =========================
+   SHOW NEARBY BIKES
+========================= */
+
 function showNearbyBikes(){
-bikeMarkers.forEach(b=>map.removeLayer(b));
-bikeMarkers=[];
-for(let i=0;i<3;i++){
-let lat=pickupLat+(Math.random()-0.5)/500;
-let lng=pickupLng+(Math.random()-0.5)/500;
-bikeMarkers.push(L.marker([lat,lng]).addTo(map));
-}
+
+    bikeMarkers.forEach(function(marker){
+        map.removeLayer(marker);
+    });
+
+    bikeMarkers = [];
+
+    for(let i=0; i<3; i++){
+
+        let lat = pickupLat + (Math.random() - 0.5) / 500;
+        let lng = pickupLng + (Math.random() - 0.5) / 500;
+
+        let marker = L.marker([lat, lng]).addTo(map);
+
+        bikeMarkers.push(marker);
+    }
 }
 
-// DISTANCE
-function getDistance(a,b,c,d){
-const R=6371;
-const dLat=(c-a)*Math.PI/180;
-const dLon=(d-b)*Math.PI/180;
-const x=Math.sin(dLat/2)**2+
-Math.cos(a*Math.PI/180)*
-Math.cos(c*Math.PI/180)*
-Math.sin(dLon/2)**2;
-return R*(2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)));
+/* =========================
+   DISTANCE CALCULATION
+========================= */
+
+function getDistance(lat1, lon1, lat2, lon2){
+
+    const R = 6371;
+
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(lat1 * Math.PI / 180) *
+        Math.cos(lat2 * Math.PI / 180) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
 }
 
-// FARE
+/* =========================
+   FARE CALCULATION
+========================= */
+
 function calculateFare(){
-if(!pickupLat||!dropLat) return;
 
-let d=getDistance(pickupLat,pickupLng,dropLat,dropLng);
+    if(!pickupLat || !dropLat) return;
 
-document.getElementById("distance").innerHTML="Distance: "+d.toFixed(2)+" km";
-document.getElementById("fare").innerHTML="Estimated Fare: ₹"+Math.round(25+d*7);
+    let distance = getDistance(
+        pickupLat,
+        pickupLng,
+        dropLat,
+        dropLng
+    );
+
+    let fare = Math.round(25 + (distance * 7));
+
+    document.getElementById("distance").innerHTML =
+        "Distance: " + distance.toFixed(2) + " km";
+
+    document.getElementById("fare").innerHTML =
+        "Estimated Fare: ₹" + fare;
 }
 
-// BOOK
+/* =========================
+   BOOK RIDE
+========================= */
+
 function bookRide(){
 
-if(!pickupLat||!dropLat){
-alert("Select pickup & drop");
-return;
-}
+    if(!pickupLat || !dropLat){
+        alert("Please select pickup and drop location");
+        return;
+    }
 
-let fareText=document.getElementById("fare").innerText;
-let distanceText=document.getElementById("distance").innerText;
+    let pickupText = document.getElementById("pickup").value;
+    let dropText = document.getElementById("drop").value;
+    let fareText = document.getElementById("fare").innerText;
+    let distanceText = document.getElementById("distance").innerText;
 
-let pickupLink=`https://www.google.com/maps?q=${pickupLat},${pickupLng}`;
-let dropLink=`https://www.google.com/maps?q=${dropLat},${dropLng}`;
+    let pickupLink =
+        `https://www.google.com/maps?q=${pickupLat},${pickupLng}`;
 
-db.collection("rides").add({
-pickup:pickup.value,
-drop:drop.value,
-fare:fareText,
-distance:distanceText,
-time:new Date()
-})
-.then(()=>{
+    let dropLink =
+        `https://www.google.com/maps?q=${dropLat},${dropLng}`;
 
-let msg=`Hi RideKaro, I want to confirm my ride.
-Pickup: ${pickup.value}
+    db.collection("rides").add({
+        pickup: pickupText,
+        drop: dropText,
+        fare: fareText,
+        distance: distanceText,
+        rideType: document.getElementById("rideType").value,
+        time: new Date()
+    })
+    .then(function(){
+
+        let msg = `Hi RideKaro, I want to confirm my ride.
+
+Pickup: ${pickupText}
 📍 ${pickupLink}
-Drop: ${drop.value}
+
+Drop: ${dropText}
 📍 ${dropLink}
+
 ${distanceText}
 ${fareText}`;
 
-window.open(`https://wa.me/917051768470?text=${encodeURIComponent(msg)}`);
+        window.open(
+            `https://wa.me/917051768470?text=${encodeURIComponent(msg)}`
+        );
 
-sendEmail({
-pickup:pickup.value,
-drop:drop.value,
-fare:fareText
-});
+        sendEmail({
+            pickup: pickupText,
+            drop: dropText,
+            fare: fareText
+        });
 
-alert("Ride Booked");
-
-});
-
+        alert("Ride Booked Successfully");
+    });
 }
 
-// EMAIL
+/* =========================
+   EMAILJS
+========================= */
+
 function sendEmail(data){
-emailjs.send("service_a20rsus","template_xot7epe",{
-pickup:data.pickup,
-drop:data.drop,
-fare:data.fare
-});
+
+    emailjs.send(
+        "service_a20rsus",
+        "template_xot7epe",
+        {
+            pickup: data.pickup,
+            drop: data.drop,
+            fare: data.fare
+        }
+    );
 }
 
 (function(){
-emailjs.init("szp9VSLWIoqh_DW6P");
+    emailjs.init("szp9VSLWIoqh_DW6P");
 })();
 
 </script>
