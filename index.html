@@ -205,19 +205,20 @@ let bikeMarkers = [];
    MAP
 ========================= */
 
-const map = L.map('map').setView([32.3861, 75.5170], 12);
+const map = L.map('map').setView([32.3861, 75.5170], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 20,
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
+
 const imageBounds = [
-    [32.18, 75.20],
-    [32.62, 75.85]
+    [32.28, 75.38],
+    [32.50, 75.62]
 ];
 
-L.imageOverlay('kathua-map.png', imageBounds, {
-    opacity: 0.9
+L.imageOverlay('kathua-local-map.png', imageBounds, {
+    opacity: 0.85
 }).addTo(map);
 /* =========================
    CURRENT LOCATION
