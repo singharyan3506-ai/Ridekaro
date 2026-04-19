@@ -30,12 +30,10 @@ img{width:100%;margin-top:10px;border-radius:10px;}
 
 <p><b>Bike Taxi Service in Kathua</b></p>
 <p>Starting ₹25 | ₹7 per km</p>
-
 <p><b>⚡ Pickup in 10–15 minutes</b></p>
+<p><b>Head Office: Shaheedi Chowk, Kathua</b></p>
 
-<p><b>Head Office Address: Shaheedi Chowk, Kathua, Ward number 6</b></p>
-
-<a href="https://wa.me/917051768470?text=Hi%20RideKaro,%20I%20want%20to%20book%20a%20ride.%0APickup:%0ADrop:%0ATime:" target="_blank">
+<a href="https://wa.me/917051768470" target="_blank">
 <button style="background:green;color:white;width:250px;font-size:18px">
 🚀 Book Ride Instantly
 </button>
@@ -57,7 +55,6 @@ img{width:100%;margin-top:10px;border-radius:10px;}
 <div id="map"></div>
 
 <input id="pickup" placeholder="Pickup location">
-<!-- ❌ REMOVED onblur -->
 <input id="drop" placeholder="Drop location">
 
 <select id="rideType">
@@ -71,48 +68,77 @@ img{width:100%;margin-top:10px;border-radius:10px;}
 <p id="distance">Distance: 0 km</p>
 </div>
 
-<!-- GOOGLE PLACES API ✅ -->
+<!-- ✅ RIDERS -->
+<div class="container">
+<h3>Riders Available</h3>
+
+<p><b>Rider 1:</b></p>
+<p>Bike: Hero Splendor Plus HF Deluxe</p>
+<p>Bike Number: JK08L8665</p>
+<p>Phone: 7006875689</p>
+
+<img src="rider1_1.jpg">
+<img src="rider1_2.jpg">
+
+<hr>
+
+<p><b>Rider 2:</b></p>
+<p>Bike: Royal Enfield Bullet</p>
+<p>Bike Number: JK08R4310</p>
+<p>Phone: 6006582698</p>
+
+<img src="rider2_1.jpg">
+<img src="rider2_2.jpg">
+
+</div>
+
+<div class="container">
+<h3>How It Works</h3>
+<p>1. Enter pickup & drop</p>
+<p>2. See fare instantly</p>
+<p>3. Confirm on WhatsApp</p>
+<p>4. Rider arrives 🚀</p>
+</div>
+
+<div class="container">
+<h3>Why Choose RideKaro?</h3>
+<p>✔ Verified Local Rider</p>
+<p>✔ Safe & Affordable</p>
+<p>✔ Fast Pickup in Kathua</p>
+<p>✔ Easy WhatsApp Booking</p>
+</div>
+
+<div class="container">
+<h3>Service Area</h3>
+<p>Kathua - College Road, Hatli Morh, Ward 6, Main Market, Bus Stand</p>
+</div>
+
+<!-- GOOGLE API -->
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=places"></script>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
 <script>
-
 const firebaseConfig = {
 apiKey: "AIzaSyDq8djWCKZCx9a0evT8n85vYZt8srcxH8o",
 authDomain: "ridekaro-2237b.firebaseapp.com",
-projectId: "ridekaro-2237b",
-storageBucket: "ridekaro-2237b.firebasestorage.app",
-messagingSenderId: "805660027682",
-appId: "1:805660027682:web:0117b81f4ec8d341e5d37b"
+projectId: "ridekaro-2237b"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 let pickupLat,pickupLng,dropLat,dropLng;
-let routeLine;
-let dropMarker;
+let routeLine, dropMarker;
 let bikeMarkers = [];
 
-const redBikeIcon = new L.Icon({
-iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-iconSize: [25,41],
-iconAnchor: [12,41],
-popupAnchor: [1,-34],
-shadowSize: [41,41]
-});
-
-const map = L.map('map').setView([28.6139,77.2090], 12);
+const map = L.map('map').setView([32.3861,75.5170], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 .addTo(map);
 
+// 📍 CURRENT LOCATION
 navigator.geolocation.getCurrentPosition(pos=>{
 pickupLat=pos.coords.latitude;
 pickupLng=pos.coords.longitude;
@@ -125,13 +151,12 @@ L.marker([pickupLat,pickupLng]).addTo(map);
 showNearbyBikes();
 });
 
+// 🗺️ CLICK DROP
 map.on('click',e=>{
 dropLat=e.latlng.lat;
 dropLng=e.latlng.lng;
 
-if(dropMarker){
-map.removeLayer(dropMarker);
-}
+if(dropMarker) map.removeLayer(dropMarker);
 
 dropMarker = L.marker([dropLat,dropLng]).addTo(map);
 
@@ -139,28 +164,32 @@ drawRoute();
 calculateFare();
 });
 
-/* ✅ GOOGLE AUTOCOMPLETE FIX */
+// 🔥 GOOGLE AUTOCOMPLETE WITH KATHUA BIAS
 window.onload = function(){
 
-let dropInput = document.getElementById("drop");
+let kathuaBounds = new google.maps.LatLngBounds(
+new google.maps.LatLng(32.35,75.48),
+new google.maps.LatLng(32.42,75.55)
+);
 
-let autocomplete = new google.maps.places.Autocomplete(dropInput);
-
-autocomplete.addListener("place_changed", function(){
-
-let place = autocomplete.getPlace();
-
-if(!place.geometry){
-alert("Location not found");
-return;
+let dropAuto = new google.maps.places.Autocomplete(
+document.getElementById("drop"),
+{
+bounds: kathuaBounds,
+componentRestrictions: { country: "in" },
+strictBounds: false
 }
+);
+
+dropAuto.addListener("place_changed", function(){
+
+let place = dropAuto.getPlace();
+if(!place.geometry) return;
 
 dropLat = place.geometry.location.lat();
 dropLng = place.geometry.location.lng();
 
-if(dropMarker){
-map.removeLayer(dropMarker);
-}
+if(dropMarker) map.removeLayer(dropMarker);
 
 dropMarker = L.marker([dropLat,dropLng]).addTo(map);
 
@@ -176,42 +205,31 @@ calculateFare();
 function drawRoute(){
 if(!pickupLat || !dropLat) return;
 
-if(routeLine){
-map.removeLayer(routeLine);
-}
+if(routeLine) map.removeLayer(routeLine);
 
 routeLine = L.polyline([
 [pickupLat,pickupLng],
 [dropLat,dropLng]
-],{
-color:'blue',
-weight:5
-}).addTo(map);
+],{color:'blue'}).addTo(map);
 
 map.fitBounds(routeLine.getBounds());
 }
 
 function showNearbyBikes(){
-
 if(!pickupLat) return;
 
 bikeMarkers.forEach(b => map.removeLayer(b));
-bikeMarkers = [];
+bikeMarkers=[];
 
-let count = Math.floor(Math.random()*2)+2;
+for(let i=0;i<3;i++){
+let lat = pickupLat+(Math.random()-0.5)/500;
+let lng = pickupLng+(Math.random()-0.5)/500;
 
-for(let i=0;i<count;i++){
-
-let lat = pickupLat + (Math.random()-0.5)/500;
-let lng = pickupLng + (Math.random()-0.5)/500;
-
-let bike = L.marker([lat,lng], {icon:redBikeIcon})
-.addTo(map)
-.bindPopup("🚲 RideKaro Bike Nearby");
-
-bikeMarkers.push(bike);
+bikeMarkers.push(
+L.marker([lat,lng]).addTo(map)
+.bindPopup("🚲 RideKaro Bike Nearby")
+);
 }
-
 }
 
 function getDistance(a,b,c,d){
@@ -219,8 +237,7 @@ const R=6371;
 const dLat=(c-a)*Math.PI/180;
 const dLon=(d-b)*Math.PI/180;
 
-const x=
-Math.sin(dLat/2)**2+
+const x=Math.sin(dLat/2)**2+
 Math.cos(a*Math.PI/180)*
 Math.cos(c*Math.PI/180)*
 Math.sin(dLon/2)**2;
@@ -244,66 +261,25 @@ document.getElementById("fare").innerHTML =
 
 function bookRide(){
 
-if(!pickupLat){
-alert("Allow location access");
+if(!pickupLat || !dropLat){
+alert("Select pickup & drop");
 return;
 }
 
-if(!dropLat){
-alert("Select drop location");
-return;
-}
+let msg = `Pickup: ${pickup.value}
+Drop: ${drop.value}`;
 
-let fareText = document.getElementById("fare").innerText;
-let distanceText = document.getElementById("distance").innerText;
-
-let pickupLink = `https://www.google.com/maps?q=${pickupLat},${pickupLng}`;
-let dropLink = `https://www.google.com/maps?q=${dropLat},${dropLng}`;
+window.open(`https://wa.me/917051768470?text=${encodeURIComponent(msg)}`);
 
 db.collection("rides").add({
 pickup:pickup.value,
 drop:drop.value,
-fare:fareText,
-distance:distanceText,
 time:new Date()
-})
-.then(()=>{
-
-alert("Ride Booked");
-
-let msg = `Hi RideKaro, I want to confirm my ride.
-Pickup: ${pickup.value}
-📍 Pickup Location: ${pickupLink}
-Drop: ${drop.value}
-📍 Drop Location: ${dropLink}
-${distanceText}
-${fareText}`;
-
-window.open(`https://wa.me/917051768470?text=${encodeURIComponent(msg)}`, "_blank");
-
-sendEmail({
-pickup:pickup.value,
-drop:drop.value,
-fare:fareText
 });
 
-});
+alert("Ride Booked!");
 
 }
-
-function sendEmail(data){
-emailjs.send("service_a20rsus","template_xot7epe",{
-pickup: data.pickup,
-drop: data.drop,
-fare: data.fare
-})
-.then(()=>console.log("Email sent"))
-.catch(e=>console.log(e));
-}
-
-(function(){
-emailjs.init("szp9VSLWIoqh_DW6P");
-})();
 
 </script>
 
