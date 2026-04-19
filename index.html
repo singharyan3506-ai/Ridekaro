@@ -112,16 +112,23 @@ const db = firebase.firestore();
 
 let pickupLat,pickupLng,dropLat,dropLng;
 let routeLine;
-
-// ✅ ADDED: nearby bikes storage
 let bikeMarkers = [];
+
+// 🔴 ADDED: RED ICON
+const redBikeIcon = new L.Icon({
+iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+iconSize: [25,41],
+iconAnchor: [12,41],
+popupAnchor: [1,-34],
+shadowSize: [41,41]
+});
 
 const map = L.map('map').setView([28.6139,77.2090], 12);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
 .addTo(map);
 
-// ✅ Current location
 navigator.geolocation.getCurrentPosition(pos=>{
 pickupLat=pos.coords.latitude;
 pickupLng=pos.coords.longitude;
@@ -131,11 +138,9 @@ document.getElementById("pickup").value = "Current Location";
 map.setView([pickupLat,pickupLng],15);
 L.marker([pickupLat,pickupLng]).addTo(map);
 
-// ✅ ADDED: show nearby bikes
 showNearbyBikes();
 });
 
-// ✅ Map click for drop
 map.on('click',e=>{
 dropLat=e.latlng.lat;
 dropLng=e.latlng.lng;
@@ -146,7 +151,6 @@ drawRoute();
 calculateFare();
 });
 
-// ✅ UPDATED: Draw route (with auto zoom)
 function drawRoute(){
 if(!pickupLat || !dropLat) return;
 
@@ -162,25 +166,26 @@ color:'blue',
 weight:5
 }).addTo(map);
 
-// auto zoom
 map.fitBounds(routeLine.getBounds());
 }
 
-// ✅ ADDED: Nearby bikes function
+// 🔴 UPDATED: only 2–3 bikes + red icon
 function showNearbyBikes(){
 
 if(!pickupLat) return;
 
-// remove old
 bikeMarkers.forEach(b => map.removeLayer(b));
 bikeMarkers = [];
 
-for(let i=0;i<5;i++){
+// random 2 or 3 bikes
+let count = Math.floor(Math.random()*2)+2;
+
+for(let i=0;i<count;i++){
 
 let lat = pickupLat + (Math.random()-0.5)/500;
 let lng = pickupLng + (Math.random()-0.5)/500;
 
-let bike = L.marker([lat,lng])
+let bike = L.marker([lat,lng], {icon:redBikeIcon})
 .addTo(map)
 .bindPopup("🚲 RideKaro Bike Nearby");
 
@@ -189,7 +194,6 @@ bikeMarkers.push(bike);
 
 }
 
-// ✅ Distance calculation
 function getDistance(a,b,c,d){
 const R=6371;
 const dLat=(c-a)*Math.PI/180;
@@ -204,7 +208,6 @@ Math.sin(dLon/2)**2;
 return R*(2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x)));
 }
 
-// ✅ Fare + distance
 function calculateFare(){
 if(!pickupLat || !dropLat) return;
 
@@ -219,7 +222,6 @@ document.getElementById("fare").innerHTML =
 "Estimated Fare: ₹"+Math.round(fare);
 }
 
-// ✅ Booking
 function bookRide(){
 
 if(!pickupLat){
@@ -269,7 +271,6 @@ fare:fareText
 
 }
 
-// ✅ EmailJS
 function sendEmail(data){
 emailjs.send("service_a20rsus","template_xot7epe",{
 pickup: data.pickup,
