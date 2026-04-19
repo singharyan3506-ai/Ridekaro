@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,12 +50,12 @@ button{background:#f4c430;border:none;cursor:pointer;font-weight:bold;}
 <div class="container">
 <h3>Book Ride</h3>
 
-<p><b>👉 Tap on map to select drop location</b></p>
+<p><b>👉 Tap on map OR type location</b></p>
 
 <div id="map"></div>
 
 <input id="pickup" placeholder="Pickup location">
-<input id="drop" placeholder="Drop location">
+<input id="drop" placeholder="Drop location" onblur="searchDropLocation()">
 
 <select id="rideType">
 <option>Bike Taxi</option>
@@ -110,10 +111,9 @@ const db = firebase.firestore();
 
 let pickupLat,pickupLng,dropLat,dropLng;
 let routeLine;
-let dropMarker; // ✅ ONLY ONE DROP MARKER
+let dropMarker;
 let bikeMarkers = [];
 
-// 🔴 RED ICON
 const redBikeIcon = new L.Icon({
 iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
 shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
@@ -140,21 +140,53 @@ L.marker([pickupLat,pickupLng]).addTo(map);
 showNearbyBikes();
 });
 
+// ✅ MAP CLICK
 map.on('click',e=>{
 dropLat=e.latlng.lat;
 dropLng=e.latlng.lng;
 
-// ✅ remove old marker
 if(dropMarker){
 map.removeLayer(dropMarker);
 }
 
-// ✅ add new marker
 dropMarker = L.marker([dropLat,dropLng]).addTo(map);
 
 drawRoute();
 calculateFare();
 });
+
+// ✅ NEW: SEARCH DROP LOCATION
+function searchDropLocation(){
+
+let place = document.getElementById("drop").value;
+if(!place) return;
+
+fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${place}`)
+.then(res => res.json())
+.then(data => {
+
+if(data.length === 0){
+alert("Location not found");
+return;
+}
+
+dropLat = parseFloat(data[0].lat);
+dropLng = parseFloat(data[0].lon);
+
+if(dropMarker){
+map.removeLayer(dropMarker);
+}
+
+dropMarker = L.marker([dropLat,dropLng]).addTo(map);
+
+map.setView([dropLat,dropLng],15);
+
+drawRoute();
+calculateFare();
+
+});
+
+}
 
 function drawRoute(){
 if(!pickupLat || !dropLat) return;
@@ -181,7 +213,6 @@ if(!pickupLat) return;
 bikeMarkers.forEach(b => map.removeLayer(b));
 bikeMarkers = [];
 
-// ✅ only 2–3 bikes
 let count = Math.floor(Math.random()*2)+2;
 
 for(let i=0;i<count;i++){
@@ -234,7 +265,7 @@ return;
 }
 
 if(!dropLat){
-alert("Select drop location on map");
+alert("Select drop location");
 return;
 }
 
