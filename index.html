@@ -266,21 +266,56 @@ function(){
    MAP CLICK
 ========================= */
 
+/* =========================
+   MAP CLICK FOR PICKUP + DROP
+========================= */
+
+let pickupMarker;
+let selectingPickup = true;
+
 map.on('click', function(e){
 
-    dropLat = e.latlng.lat;
-    dropLng = e.latlng.lng;
+    let lat = e.latlng.lat;
+    let lng = e.latlng.lng;
 
-    if(dropMarker){
-        map.removeLayer(dropMarker);
+    if(selectingPickup){
+
+        pickupLat = lat;
+        pickupLng = lng;
+
+        if(pickupMarker){
+            map.removeLayer(pickupMarker);
+        }
+
+        pickupMarker = L.marker([pickupLat, pickupLng]).addTo(map);
+
+        document.getElementById("pickup").value =
+            pickupLat.toFixed(5) + ", " + pickupLng.toFixed(5);
+
+        selectingPickup = false;
+
+        alert("Now click on map to select DROP location");
+
+    } else {
+
+        dropLat = lat;
+        dropLng = lng;
+
+        if(dropMarker){
+            map.removeLayer(dropMarker);
+        }
+
+        dropMarker = L.marker([dropLat, dropLng]).addTo(map);
+
+        document.getElementById("drop").value =
+            dropLat.toFixed(5) + ", " + dropLng.toFixed(5);
+
+        drawRoute();
+
+        selectingPickup = true;
+
+        alert("Ride route created successfully");
     }
-
-    dropMarker = L.marker([dropLat, dropLng]).addTo(map);
-
-    document.getElementById("drop").value =
-        dropLat.toFixed(5) + ", " + dropLng.toFixed(5);
-
-    drawRoute();
 });
 
 /* =========================
