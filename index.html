@@ -60,6 +60,27 @@ img{
     margin-top:10px;
     border-radius:10px;
 }
+
+/* NEW CONTACT BOX */
+.contact-box{
+    background:#fff8d6;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+
+.contact-box h3{
+    margin-top:0;
+    text-align:center;
+    color:#000;
+}
+
+.contact-box p{
+    text-align:center;
+    margin-bottom:15px;
+    font-weight:bold;
+}
 </style>
 </head>
 
@@ -95,6 +116,16 @@ img{
 <div class="container">
     <h3>Book Ride</h3>
     <p><b>👉 Tap on map OR type location</b></p>
+
+    <!-- NEW PHONE + EMAIL SECTION -->
+    <div class="contact-box">
+        <h3>📞 Customer Details</h3>
+        <p>Please enter your Phone Number and Gmail before booking</p>
+
+        <input id="phone" type="tel" placeholder="Enter Your Phone Number">
+
+        <input id="gmail" type="email" placeholder="Enter Your Gmail Address">
+    </div>
 
     <!-- NEW ATTRACTIVE LINE ADDED -->
     <p style="background:#fff8d6; padding:12px; border-radius:10px; font-weight:bold; line-height:1.6;">
@@ -231,13 +262,17 @@ let bikeMarkers = [];
 function bookRide(){
 
    if(
+   !document.getElementById("phone").value ||
+   !document.getElementById("gmail").value ||
    !document.getElementById("pickup").value ||
    !document.getElementById("drop").value
 ){
-    alert("Please enter Pickup and Drop location");
+    alert("Please enter Phone Number, Gmail, Pickup and Drop location");
     return;
 }
 
+    let phoneText = document.getElementById("phone").value;
+    let gmailText = document.getElementById("gmail").value;
     let pickupText = document.getElementById("pickup").value;
     let dropText = document.getElementById("drop").value;
     let fareText = document.getElementById("fare").innerText;
@@ -250,6 +285,8 @@ function bookRide(){
 `https://www.google.com/maps/search/${encodeURIComponent(dropText + ", Kathua")}`;
 
     db.collection("rides").add({
+        phone: phoneText,
+        gmail: gmailText,
         pickup: pickupText,
         drop: dropText,
         fare: fareText,
@@ -260,6 +297,9 @@ function bookRide(){
     .then(function(){
 
         let msg = `Hi RideKaro, I want to confirm my ride.
+
+Phone: ${phoneText}
+Gmail: ${gmailText}
 
 Pickup: ${pickupText}
 📍 ${pickupLink}
@@ -275,6 +315,8 @@ ${fareText}`;
         );
 
         sendEmail({
+            phone: phoneText,
+            gmail: gmailText,
             pickup: pickupText,
             drop: dropText,
             fare: fareText
@@ -294,6 +336,8 @@ function sendEmail(data){
         "service_a20rsus",
         "template_xot7epe",
         {
+            phone: data.phone,
+            gmail: data.gmail,
             pickup: data.pickup,
             drop: data.drop,
             fare: data.fare
