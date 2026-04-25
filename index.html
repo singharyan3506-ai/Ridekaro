@@ -3,8 +3,12 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Ridekaro</title>
+
+    <title>Ridekaro</title>
 <link rel="icon" href="logo.png">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#f4c430">
 
 <style>
 body{
@@ -342,7 +346,16 @@ function calculateFare() {
         "Fare Formula: <b>Total KM Distance × ₹7 + ₹25 (Platform Fees)</b><br><br>Rider will tell you final fare on WhatsApp once you book the ride.<br><br>You can also calculate your estimated fare by yourself using the above formula.";
 }
 
+
+    </script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(() => console.log('Service Worker Registered'));
+}
 </script>
 
 </body>
 </html>
+
