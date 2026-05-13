@@ -86,8 +86,8 @@ img{
 
     <p><b>Head Office Address: Shaheedi Chowk, Kathua</b></p>
 
-    <!-- WHATSAPP BUTTON -->
-    <a href="https://wa.me/917051768470?text=Hi%20RideKaro,%20I%20want%20to%20book%20a%20ride.%0APickup:%0ADrop:%0ATime:" target="_blank">
+    <!-- WHATSAPP GROUP BUTTON -->
+    <a href="https://chat.whatsapp.com/J44bBc1JL4oDOQpk1zilNt?mode=gi_t" target="_blank">
 
         <button style="background:green;color:white;width:250px;font-size:18px;">
 
@@ -110,11 +110,6 @@ img{
 
     </a>
 
-    <!-- SECOND NUMBER -->
-    <p style="margin-top:15px;">
-        <b>Alternative Booking Number:</b> 6006582698
-    </p>
-
 </div>
 
 <!-- BOOK RIDE -->
@@ -130,7 +125,11 @@ img{
     <!-- NOTICE -->
     <p style="background:#fff8d6; padding:12px; border-radius:10px; font-weight:bold; line-height:1.6;">
 
-        🚖 Pickup Charge Notice: If your rider travels up to 10 KM to reach your pickup location, a fixed pickup charge of ₹40 will apply. After pickup, your ride fare is calculated at just ₹9 per KM for safe and affordable travel.
+        🚖 Pickup Charge Notice:
+        If your rider travels up to 10 KM to reach your pickup location,
+        a fixed pickup charge of ₹40 will apply.
+        After pickup, your ride fare is calculated at just ₹9 per KM
+        for safe and affordable travel.
 
     </p>
 
@@ -189,7 +188,8 @@ img{
 
     <p id="distance">
 
-        Distance: Please check total distance using Google Maps on your phone.
+        Distance:
+        Please check total distance using Google Maps on your phone.
         Rider will also verify the distance in front of you.
 
     </p>
@@ -205,7 +205,8 @@ img{
 
         <br><br>
 
-        You can also calculate your estimated fare by yourself using the above formula.
+        You can also calculate your estimated fare
+        by yourself using the above formula.
 
     </p>
 
@@ -249,8 +250,9 @@ img{
 
     <p>1. Enter pickup & drop</p>
     <p>2. See fare instantly</p>
-    <p>3. Confirm on WhatsApp</p>
-    <p>4. Rider arrives 🚀</p>
+    <p>3. Booking details copied automatically</p>
+    <p>4. WhatsApp group opens</p>
+    <p>5. Paste and send booking 🚀</p>
 
 </div>
 
@@ -272,7 +274,10 @@ img{
     <h3>Service Area</h3>
 
     <p>
-        Kathua - College Road, Hatli Morh, Main Market, Bus Stand
+        Kathua - College Road,
+        Hatli Morh,
+        Main Market,
+        Bus Stand
     </p>
 
 </div>
@@ -312,15 +317,20 @@ function bookRide(){
         return;
     }
 
-    let pickupText = document.getElementById("pickup").value;
+    let pickupText =
+    document.getElementById("pickup").value;
 
-    let dropText = document.getElementById("drop").value;
+    let dropText =
+    document.getElementById("drop").value;
 
-    let phoneText = document.getElementById("customerPhone").value;
+    let phoneText =
+    document.getElementById("customerPhone").value;
 
-    let fareText = document.getElementById("fare").innerText;
+    let fareText =
+    document.getElementById("fare").innerText;
 
-    let distanceText = document.getElementById("distance").innerText;
+    let distanceText =
+    document.getElementById("distance").innerText;
 
     let pickupLink =
     `https://www.google.com/maps/search/${encodeURIComponent(pickupText + ", Kathua")}`;
@@ -356,8 +366,12 @@ ${distanceText}
 
 ${fareText}`;
 
+        // COPY MESSAGE
+        navigator.clipboard.writeText(msg);
+
+        // OPEN WHATSAPP GROUP
         window.location.href =
-        `https://api.whatsapp.com/send?phone=917051768470&text=${encodeURIComponent(msg)}`;
+        "https://chat.whatsapp.com/J44bBc1JL4oDOQpk1zilNt?mode=gi_t";
 
         sendEmail({
 
@@ -368,7 +382,7 @@ ${fareText}`;
 
         });
 
-        alert("Ride Booked Successfully");
+        alert("Booking copied. Paste it in WhatsApp group.");
 
     });
 
@@ -394,7 +408,8 @@ function sendEmail(data){
 
 function openPickupMap(){
 
-    let pickup = document.getElementById("pickup").value;
+    let pickup =
+    document.getElementById("pickup").value;
 
     if(!pickup){
 
@@ -415,7 +430,8 @@ function openPickupMap(){
 
 function openDropMap(){
 
-    let drop = document.getElementById("drop").value;
+    let drop =
+    document.getElementById("drop").value;
 
     if(!drop){
 
@@ -442,9 +458,11 @@ function openDropMap(){
 
 function calculateFare(){
 
-    let pickup = document.getElementById("pickup").value;
+    let pickup =
+    document.getElementById("pickup").value;
 
-    let drop = document.getElementById("drop").value;
+    let drop =
+    document.getElementById("drop").value;
 
     if(!pickup || !drop){
 
